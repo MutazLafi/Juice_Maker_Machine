@@ -8,10 +8,9 @@
 #define LED_1 3
 #define LED_2 4
 
-#define Push_Button1 5
-#define Push_Button2 6
-#define Push_Button3 7
-#define Start_Push_Button  8
+#define Confirm_Button 5
+
+#define Start_Push_Button 6
 
 #define PotentiometerPin A0
 
@@ -26,7 +25,11 @@ const int Maximum_Mills = 200;  // Change it as the Cup is
 
 int VariableResistorData = 0;
 
-int pushButtonsState = 0;  // for pushButtons 1,2 ,3 or 4 for start PushButton
+int VariableResistorReading = 0;
+
+int ModeState = 0;
+
+int Confirm_Push_Button_State = 0;
 
 int Start_Push_Button_State = 0;
 
@@ -36,10 +39,15 @@ int Strawberry_Juice_Mills = 0;
 
 int StartScreenState = 0;
 
+int SelectionState = 0;
+
+int FinalSelection = 0;
 
 int PotReading = 0;
 
 int PotFixedData = 0;
+
+int StartPushButtonRead = 0;
 
 //Objects//
 
@@ -74,75 +82,118 @@ void setup() {
 void loop() {
 
   VariableResistorData = General.PotentiometerData();
-  if (StartScreenState == 0 || pushButtonsState == 0) {
+
+  if (StartScreenState == 0 || ModeState == 0) {
     Display.StartScreen();
+
+    VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
+
+    if (VariableResistorReading < 512) {
+      ModeState = 1;
+    } else if (VariableResistorReading > 512) {
+      ModeState = 2;
+    }
     StartScreenState = 1;
   }
 
 
-  if (PushButtons.CheckButton1() == 1) {
-    pushButtonsState = 1;
-    Serial.print("1");
-  }
 
-  if (PushButtons.CheckButton2() == 1) {
-    pushButtonsState = 2;
-  }
-
-  if (PushButtons.CheckButton3() == 1) {
-  }
-
-  if (pushButtonsState == 1) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Orange: ");
-    VariableResistorData = General.PotentiometerData();
-    Orange_Juice_Mills = VariableResistorData;
-    lcd.print(Orange_Juice_Mills * 10);
-  }
-
-  if (pushButtonsState == 2) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Mango: ");
-    VariableResistorData = General.PotentiometerData();
-    Mango_Juice_Mills = VariableResistorData;
-    lcd.print(Mango_Juice_Mills * 10);
-  }
-
-  if (pushButtonsState == 3) {
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("Strawberry: ");
-    VariableResistorData = General.PotentiometerData();
-    Strawberry_Juice_Mills = VariableResistorData;
-    lcd.print(Strawberry_Juice_Mills * 10);
-  }
-
-  if(pushButtonsState == 4 && Start_Push_Button_State == 0){
-    Start_Push_Button_State = 1;
-  }else if(pushButtonsState == 4 && Start_Push_Button_State == 1){
-    Start_Push_Button_State == 2;
-  }
-
-  if(Start_Push_Button_State == 1){
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Start??");
-  }else if(Start_Push_Button == 2){
-    lcd.clear();
-    lcd.setCursor(0,0);
-    lcd.print("Running...");
-    Pumps.open(PumpPin1,"NO");
-    delay(1);
-    Pumps.open(PumpPin2,"NO");
-    delay(1);
-    Pumps.open(PumpPin3,"NO");
-    delay(1);
-    Start_Push_Button_State = 0;
-    pushButtonsState = 0;
-  }
-
+  if (ModeState == 1) {
   
+    // Auto Mode
+  } else if (ModeState == 2) {
+    // Selection Mode
 
+
+
+
+    VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
+    SelectionState = map(VariableResistorReading, 1023, 0, 4, 0);
+
+    StartPushButtonRead = PushButtons.CheckStartButton();
+
+    if (SelectionState == 1) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Orange");
+    }
+
+    if (SelectionState == 2) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Mango");
+    }
+
+    if (SelectionState == 3) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Strawberry");
+    }
+
+    if (PushButtons.CheckConfirmButton() == 1) {
+      VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
+      FinalSelection = map(VariableResistorReading, 1023, 0, 4, 0);
+      
+    }
+
+
+    if (FinalSelection == 1) {
+      while(! PushButtons.CheckConfirmButton() == 1){
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Orange: ");
+      VariableResistorData = General.PotentiometerData();
+      Orange_Juice_Mills = VariableResistorData;
+      lcd.print(Orange_Juice_Mills);
+      }
+    }
+
+    if (FinalSelection == 2) {
+      while(! PushButtons.CheckConfirmButton() == 1){
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Mango: ");
+      VariableResistorData = General.PotentiometerData();
+      Mango_Juice_Mills = VariableResistorData;
+      lcd.print(Mango_Juice_Mills);
+      }
+    }
+
+    if (FinalSelection == 3) {
+      while(! PushButtons.CheckConfirmButton() == 1){
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Strawberry: ");
+      VariableResistorData = General.PotentiometerData();
+      Strawberry_Juice_Mills = VariableResistorData;
+      lcd.print(Strawberry_Juice_Mills);
+      }
+    }
+
+    if (StartPushButtonRead == 1 && Start_Push_Button_State == 0) {
+      Start_Push_Button_State = 1;
+    } else if (StartPushButtonRead == 1 && Start_Push_Button_State == 1) {
+      Start_Push_Button_State == 2;
+    }
+
+    if (Start_Push_Button_State == 1) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Start??");
+    } else if (Start_Push_Button == 2) {
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Running...");
+      Pumps.open(PumpPin1, "NO");
+      delay(1);
+      Pumps.open(PumpPin2, "NO");
+      delay(1);
+      Pumps.open(PumpPin3, "NO");
+      delay(1);
+      Start_Push_Button_State = 0;
+      ModeState = 0;
+    }
+  }
+ 
 }
+

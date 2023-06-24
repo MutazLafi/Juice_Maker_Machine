@@ -22,8 +22,7 @@ public:
   int PotentiometerData() {
     PotReading = analogRead(A0);
     Serial.println(PotFixedData);
-    Serial.println(PotFixedData);
-    PotFixedData = map(PotReading, 0, 1023, -1, (Maximum_Mills / 10) + 1);
+    PotFixedData = map(PotReading, 0, 1023, -1, (Maximum_Mills) + 1);
     Serial.println(PotFixedData);
     return PotFixedData;
   }
@@ -65,7 +64,8 @@ private:
   String WelcomeText1 = "Cocktail Mixer";
   String WelcomeText2 = "By Mutaz Lafi";
 
-  String StartText = "Press a Button";
+  String StartText1 = "Choose Mode";
+  String StartText2 = "Auto/Selection";
 
 public:
 
@@ -86,55 +86,37 @@ public:
   void StartScreen() {
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(StartText);
+    lcd.print(StartText1);
+    lcd.setCursor(0, 1);
+    lcd.print(StartText2);
+    delay(4000);
   }
 };
 
 class PushButtonsClass {
 public:
 
-  int ButtonRead1 = 0;
-  int ButtonRead2 = 0;
-  int ButtonRead3 = 0;
+  int ConfirmPushButtonRead = 0;
   int StartPushButtonRead = 0;
 
   void begin() {
-    pinMode(Push_Button1, INPUT);
-    pinMode(Push_Button2, INPUT);
-    pinMode(Push_Button3, INPUT);
+    pinMode(ConfirmPushButtonRead, INPUT);
+    pinMode(StartPushButtonRead, INPUT);
   }
 
-  int CheckButton1() {
-    ButtonRead1 = digitalRead(Push_Button1);
-    Serial.println(ButtonRead1);
+  int CheckConfirmButton() {
+    ConfirmPushButtonRead = digitalRead(Confirm_Button);
+    Serial.println(ConfirmPushButtonRead);
     delay(500);
-    if (ButtonRead1 == LOW) {
+    if (ConfirmPushButtonRead == LOW) {
       return 0;
-    } else if (ButtonRead1 == HIGH) {
-      return 1;
-    }
-  }
-
-  int CheckButton2() {
-    ButtonRead2 = digitalRead(Push_Button2);
-    if (ButtonRead2 == LOW) {
-      return 0;
-    } else if (ButtonRead2 == HIGH) {
-      return 1;
-    }
-  }
-
-  int CheckButton3() {
-    ButtonRead3 = digitalRead(Push_Button3);
-    if (ButtonRead3 == LOW) {
-      return 0;
-    } else if (ButtonRead3 == HIGH) {
+    } else if (ConfirmPushButtonRead == HIGH) {
       return 1;
     }
   }
 
   int CheckStartButton() {
-    if (StartPushButtonRead == LOW) {
+    if (Start_Push_Button == LOW) {
       return 0;
     } else if (StartPushButtonRead == HIGH) {
       return 1;
