@@ -22,7 +22,7 @@ public:
   int PotentiometerData() {
     PotReading = analogRead(A0);
     Serial.println(PotFixedData);
-    PotFixedData = map(PotReading, 0, 1023, -1, (Maximum_Mills) + 1);
+    PotFixedData = map(PotReading, 0, 1023, -1, (Maximum_Mills / 10) + 1);
     Serial.println(PotFixedData);
     return PotFixedData;
   }
@@ -100,8 +100,8 @@ public:
   int StartPushButtonRead = 0;
 
   void begin() {
-    pinMode(ConfirmPushButtonRead, INPUT);
-    pinMode(StartPushButtonRead, INPUT);
+    pinMode(Confirm_Button, INPUT);
+    pinMode(Start_Push_Button, INPUT);
   }
 
   int CheckConfirmButton() {
@@ -116,7 +116,10 @@ public:
   }
 
   int CheckStartButton() {
-    if (Start_Push_Button == LOW) {
+    StartPushButtonRead = digitalRead(Start_Push_Button);
+    Serial.println(StartPushButtonRead);
+    delay(500);
+    if (StartPushButtonRead == LOW) {
       return 0;
     } else if (StartPushButtonRead == HIGH) {
       return 1;
