@@ -80,13 +80,15 @@ void setup() {
   Serial.begin(9600);
 #endif
 
-  General.begin(PotentiometerPin, LED_1, LED_2);
+  General.begin(PotentiometerPin, LED_1, LED_2, IR_Pin);
 
   Pumps.begin(PumpPin1, PumpPin2, PumpPin3);
 
   PushButtons.begin();
 
   Display.begin();
+
+  General.TurnLeds(LED_1, LED_2, true);
 }
 
 
@@ -119,8 +121,6 @@ void loop() {
     AutoModeSelectionState = map(AutoModeVariableResistorReading, 0, 1023, 0, 4);
     IRSensorRead = digitalRead(IR_Pin);
 
-AutoModeSelectionArea:
-
     if (AutoModeSelectionState == 1) {
       lcd.clear();
       lcd.setCursor(0, 0);
@@ -129,6 +129,7 @@ AutoModeSelectionArea:
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Running...");
+        General.FlashLeds(LED_1, LED_2, 4, 500);
         Pumps.open(PumpPin1, "NO");
         IRState = 1;
       }
@@ -150,6 +151,7 @@ AutoModeSelectionArea:
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Running...");
+        General.FlashLeds(LED_1, LED_2, 4, 500);
         Pumps.open(PumpPin2, "NO");
         IRState = 1;
       }
@@ -171,6 +173,7 @@ AutoModeSelectionArea:
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Running...");
+        General.FlashLeds(LED_1, LED_2, 4, 500);
         Pumps.open(PumpPin3, "NO");
         IRState = 1;
       }
@@ -287,7 +290,7 @@ SelectionArea:
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Running...");
-      delay(700);
+      General.FlashLeds(LED_1, LED_2, 4, 500);
       if (Orange_Juice_Mills + Strawberry_Juice_Mills + Mango_Juice_Mills > 200) {
         lcd.clear();
         lcd.setCursor(0, 0);

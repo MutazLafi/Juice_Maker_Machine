@@ -8,10 +8,11 @@ private:
 public:
 
 
-  void begin(int VariableResistor, int Led1, int Led2) {
+  void begin(int VariableResistor, int Led1, int Led2, int IRSensorPin) {
     pinMode(VariableResistor, INPUT);
     pinMode(Led1, OUTPUT);
     pinMode(Led2, OUTPUT);
+    pinMode(IRSensorPin, INPUT);
   }
 
   int ReadPotentiometer(int VariableResistor) {
@@ -25,6 +26,22 @@ public:
     PotFixedData = map(PotReading, 0, 1023, -1, (Maximum_Mills / 10) + 1);
     Serial.println(PotFixedData);
     return PotFixedData;
+  }
+
+  void TurnLeds(int Led1, int Led2, bool TurnState) {
+    digitalWrite(Led1, TurnState);
+    digitalWrite(Led2, TurnState);
+  }
+
+  void FlashLeds(int Led1, int Led2, int Flashes, int TimeBetweenFlashing) {
+    for (int i = 0; i < Flashes; i++) {
+      digitalWrite(Led1, LOW);
+      digitalWrite(Led2, LOW);
+      delay(TimeBetweenFlashing);
+      digitalWrite(Led1, HIGH);
+      digitalWrite(Led2, HIGH);
+      delay(TimeBetweenFlashing);
+    }
   }
 };
 
