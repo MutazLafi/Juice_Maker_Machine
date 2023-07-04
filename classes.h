@@ -41,6 +41,7 @@ public:
       digitalWrite(Led1, HIGH);
       digitalWrite(Led2, HIGH);
       delay(TimeBetweenFlashing);
+
     }
   }
 };
@@ -53,23 +54,28 @@ public:
     pinMode(Pump1, OUTPUT);
     pinMode(Pump2, OUTPUT);
     pinMode(Pump3, OUTPUT);
+
+    digitalWrite(Pump1, HIGH);
+    digitalWrite(Pump2, HIGH);
+    digitalWrite(Pump3, HIGH);
   }
 
   void open(int PumpPin, String RelayStatus) {
     if (RelayStatus == "NO") {
-      digitalWrite(PumpPin, HIGH);
+      digitalWrite(PumpPin, LOW);
+      Serial.print("Active");   // because it is a Low Active Relay
 
     } else if (RelayStatus == "NC") {
-      digitalWrite(PumpPin, LOW);
+      digitalWrite(PumpPin, HIGH);
     }
   }
 
   void close(int PumpPin, String RelayStatus) {
     if (RelayStatus == "NO") {
-      digitalWrite(PumpPin, LOW);
+      digitalWrite(PumpPin, HIGH);
 
     } else if (RelayStatus == "NC") {
-      digitalWrite(PumpPin, HIGH);
+      digitalWrite(PumpPin, LOW);
     }
   }
 };

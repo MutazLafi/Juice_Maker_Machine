@@ -7,7 +7,7 @@
 
 #define LED_1 3
 #define LED_2 4
-
+   
 #define Confirm_Button 5
 
 #define Start_Push_Button 6
@@ -59,6 +59,8 @@ int IRState = 0;
 
 int IRSensorRead = 0;
 
+int FlashState = 0;
+
 
 //Objects//
 
@@ -105,8 +107,16 @@ void loop() {
 
     if (VariableResistorReading < 512) {
       ModeState = 1;
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("in Auto Mode");
+      delay(1000);
     } else if (VariableResistorReading > 512) {
       ModeState = 2;
+      lcd.clear();
+      lcd.setCursor(0, 0);
+      lcd.print("Selection Mode");
+      delay(1000);
     }
     StartScreenState = 1;
   }
@@ -117,6 +127,7 @@ void loop() {
 
     Serial.print("in Auto Mode");
 
+
     AutoModeVariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
     AutoModeSelectionState = map(AutoModeVariableResistorReading, 0, 1023, 0, 4);
     IRSensorRead = digitalRead(IR_Pin);
@@ -125,11 +136,16 @@ void loop() {
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Orange");
+      delay(200);
       if (IRSensorRead == LOW) {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Running...");
-        General.FlashLeds(LED_1, LED_2, 4, 500);
+        if (FlashState == 0) {
+          General.FlashLeds(LED_1, LED_2, 4, 500);
+          FlashState = 1;
+        }
+
         Pumps.open(PumpPin1, "NO");
         IRState = 1;
       }
@@ -139,6 +155,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("DONE :)");
+        delay(1000);
         IRState = 0;
       }
     }
@@ -147,11 +164,16 @@ void loop() {
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Mango");
+      delay(200);
       if (IRSensorRead == LOW) {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Running...");
-        General.FlashLeds(LED_1, LED_2, 4, 500);
+        if (FlashState == 0) {
+          General.FlashLeds(LED_1, LED_2, 4, 500);
+          FlashState = 1;
+        }
+
         Pumps.open(PumpPin2, "NO");
         IRState = 1;
       }
@@ -161,6 +183,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("DONE :)");
+        delay(1000);
         IRState = 0;
       }
     }
@@ -169,11 +192,15 @@ void loop() {
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Strawberry");
+      delay(200);
       if (IRSensorRead == LOW) {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Running...");
-        General.FlashLeds(LED_1, LED_2, 4, 500);
+        if (FlashState == 0) {
+          General.FlashLeds(LED_1, LED_2, 4, 500);
+          FlashState = 1;
+        }
         Pumps.open(PumpPin3, "NO");
         IRState = 1;
       }
@@ -183,6 +210,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("DONE :)");
+        delay(1000);
         IRState = 0;
       }
     }
@@ -193,6 +221,7 @@ void loop() {
 
 
     Serial.print("in Selection Mode");
+
 
     VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
     SelectionState = map(VariableResistorReading, 1023, 0, 4, 0);
@@ -279,14 +308,8 @@ SelectionArea:
       Start_Push_Button_State == 2;
     }
 
-    if (Start_Push_Button_State == 1 && StartState == 0) {
+    if (Start_Push_Button_State == 1) {
       delay(1000);
-      while (!StartPushButtonRead == 1) {
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Start??");
-        delay(700);
-      }
       lcd.clear();
       lcd.setCursor(0, 0);
       lcd.print("Running...");
@@ -304,20 +327,21 @@ SelectionArea:
         return;
       }
       Pumps.open(PumpPin1, "NO");
-      delay(1);
+      delay((Orange_Juice_Mills * 0.025) * 1000);
       Pumps.close(PumpPin1, "NO");
 
       Pumps.open(PumpPin2, "NO");
-      delay(1);
+      delay((Mango_Juice_Mills * 0.025) * 1000);
       Pumps.close(PumpPin2, "NO");
 
       Pumps.open(PumpPin3, "NO");
-      delay(1);
+      delay((Strawberry_Juice_Mills * 0.025) * 1000);
       Pumps.close(PumpPin3, "NO");
       delay(600);
 
       Start_Push_Button_State = 0;
       ModeState = 0;
     }
+    FlashState = 0;
   }
 }
