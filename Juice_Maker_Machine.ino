@@ -7,7 +7,7 @@
 
 #define LED_1 3
 #define LED_2 4
-   
+
 #define Confirm_Button 5
 
 #define Start_Push_Button 6
@@ -33,9 +33,9 @@ int Confirm_Push_Button_State = 0;
 
 int Start_Push_Button_State = 0;
 
-int Orange_Juice_Mills = 0;
+int Pineapple_Juice_Mills = 0;
 int Mango_Juice_Mills = 0;
-int Strawberry_Juice_Mills = 0;
+int Apple_Juice_Mills = 0;
 
 int StartScreenState = 0;
 
@@ -135,7 +135,7 @@ void loop() {
     if (AutoModeSelectionState == 1) {
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Orange");
+      lcd.print("Pineapple");
       delay(200);
       if (IRSensorRead == LOW) {
         lcd.clear();
@@ -191,7 +191,7 @@ void loop() {
     if (AutoModeSelectionState == 3) {
       lcd.clear();
       lcd.setCursor(0, 0);
-      lcd.print("Strawberry");
+      lcd.print("Apple");
       delay(200);
       if (IRSensorRead == LOW) {
         lcd.clear();
@@ -219,85 +219,112 @@ void loop() {
   } else if (ModeState == 2) {
     // Selection Mode
 
-
+    Serial.print("Confirm: ");
+    Serial.print(PushButtons.CheckConfirmButton());
     Serial.print("in Selection Mode");
 
 
     VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
-    SelectionState = map(VariableResistorReading, 1023, 0, 4, 0);
+    SelectionState = map(VariableResistorReading, 1023, 1, 3, 0);
 
 
 SelectionArea:
-    if (SelectionState == 1) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Orange");
-    }
+    switch (SelectionState) {
 
-    if (SelectionState == 2) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Mango");
-    }
+      case 1:
 
-    if (SelectionState == 3) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Strawberry");
+        if (PushButtons.CheckConfirmButton() == 1) {
+          VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
+          FinalSelection = map(VariableResistorReading, 1023, 0, 3, 0);
+        }
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Pineapple");
+
+        break;
+      case 2:
+
+        if (PushButtons.CheckConfirmButton() == 1) {
+          VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
+          FinalSelection = map(VariableResistorReading, 1023, 0, 3, 0);
+        }
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Mango");
+
+        break;
+      case 3:
+
+        if (PushButtons.CheckConfirmButton() == 1) {
+          VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
+          FinalSelection = map(VariableResistorReading, 1023, 0, 3, 0);
+        }
+        lcd.clear();
+        lcd.setCursor(0, 0);
+        lcd.print("Apple");
+
+        break;
+
+
     }
 
 
     if (PushButtons.CheckConfirmButton() == 1) {
       VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
-      FinalSelection = map(VariableResistorReading, 1023, 0, 3.5, 0);
-    }
-    Serial.println("Orange Mills:");
-    Serial.print(Orange_Juice_Mills);
-    if (FinalSelection == 1) {
-      while (!PushButtons.CheckConfirmButton() == 1) {
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Orange: ");
-        VariableResistorData = General.PotentiometerData();
-        lcd.print(Orange_Juice_Mills);
-        lcd.print(" M");
-        Orange_Juice_Mills = VariableResistorData * 10;
-      }
-      FinalSelection = 0;
-      goto SelectionArea;
+      FinalSelection = map(VariableResistorReading, 1023, 0, 3, 0);
     }
 
+    switch (FinalSelection) {
 
+      case 1:
+        while (!PushButtons.CheckConfirmButton() == 1) {
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print("Pineapple: ");
+          VariableResistorData = General.PotentiometerData();
+          lcd.print(Pineapple_Juice_Mills);
+          lcd.print(" M");
+          Pineapple_Juice_Mills = VariableResistorData * 10;
+        }
+        FinalSelection = 0;
+        goto SelectionArea;
 
-    if (FinalSelection == 2) {
-      while (!PushButtons.CheckConfirmButton() == 1) {
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Mango: ");
-        VariableResistorData = General.PotentiometerData();
-        lcd.print(Mango_Juice_Mills);
-        lcd.print(" M");
-        Mango_Juice_Mills = VariableResistorData * 10;
-      }
-      FinalSelection = 0;
-      goto SelectionArea;
-    }
+        break;
 
-    if (FinalSelection == 3) {
-      while (!PushButtons.CheckConfirmButton() == 1) {
-        lcd.clear();
-        lcd.setCursor(0, 0);
-        lcd.print("Strawberry: ");
-        VariableResistorData = General.PotentiometerData();
-        lcd.print(Strawberry_Juice_Mills);
-        lcd.print(" M");
-        Strawberry_Juice_Mills = VariableResistorData * 10;
-      }
-      FinalSelection = 0;
-      goto SelectionArea;
+      case 2:
+        while (!PushButtons.CheckConfirmButton() == 1) {
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print("Mango: ");
+          VariableResistorData = General.PotentiometerData();
+          lcd.print(Mango_Juice_Mills);
+          lcd.print(" M");
+          Mango_Juice_Mills = VariableResistorData * 10;
+        }
+        FinalSelection = 0;
+        goto SelectionArea;
+
+        break;
+
+      case 3:
+
+        while (!PushButtons.CheckConfirmButton() == 1) {
+          lcd.clear();
+          lcd.setCursor(0, 0);
+          lcd.print("Apple: ");
+          VariableResistorData = General.PotentiometerData();
+          lcd.print(Apple_Juice_Mills);
+          lcd.print(" M");
+          Apple_Juice_Mills = VariableResistorData * 10;
+        }
+        FinalSelection = 0;
+        goto SelectionArea;
+
+        break;
     }
 
     StartPushButtonRead = PushButtons.CheckStartButton();
+
     Serial.print("Start:");
     Serial.print(StartPushButtonRead);
 
@@ -314,7 +341,7 @@ SelectionArea:
       lcd.setCursor(0, 0);
       lcd.print("Running...");
       General.FlashLeds(LED_1, LED_2, 4, 500);
-      if (Orange_Juice_Mills + Strawberry_Juice_Mills + Mango_Juice_Mills > 200) {
+      if (Pineapple_Juice_Mills + Apple_Juice_Mills + Mango_Juice_Mills > 200) {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("Error:");
@@ -324,18 +351,20 @@ SelectionArea:
         Serial.print("Error");
         delay(1500);
 
-        return;
+        Start_Push_Button_State = 0;
+        FlashState = 0;
+        goto SelectionArea;
       }
       Pumps.open(PumpPin1, "NO");
-      delay((Orange_Juice_Mills * 0.025) * 1000);
+      delay((Pineapple_Juice_Mills * 0.025) * 1000);
       Pumps.close(PumpPin1, "NO");
 
       Pumps.open(PumpPin2, "NO");
-      delay((Mango_Juice_Mills * 0.025) * 1000);
+      delay((Mango_Juice_Mills * 0.050) * 1000);
       Pumps.close(PumpPin2, "NO");
 
       Pumps.open(PumpPin3, "NO");
-      delay((Strawberry_Juice_Mills * 0.025) * 1000);
+      delay((Apple_Juice_Mills * 0.025) * 1000);
       Pumps.close(PumpPin3, "NO");
       delay(600);
 

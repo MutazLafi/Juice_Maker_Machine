@@ -25,6 +25,14 @@ public:
     Serial.println(PotFixedData);
     PotFixedData = map(PotReading, 0, 1023, -1, (Maximum_Mills / 10) + 1);
     Serial.println(PotFixedData);
+    if(PotFixedData == -1){
+      PotFixedData = 0;
+    }
+
+    if(PotFixedData == 21){
+      PotFixedData = 20;
+    }
+
     return PotFixedData;
   }
 
@@ -94,6 +102,8 @@ public:
 
   void begin() {
     lcd.begin();
+
+    lcd.backlight();
 
     lcd.setCursor(0, 0);
     lcd.print(WelcomeText1);
