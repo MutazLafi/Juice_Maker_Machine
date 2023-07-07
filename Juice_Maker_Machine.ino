@@ -334,9 +334,6 @@ SelectionArea:
     if (StartPushButtonRead == 1 && Start_Push_Button_State == 0) {
       Start_Push_Button_State = 1;
     }
-    if (StartPushButtonRead == 1 && Start_Push_Button_State == 1) {
-      Start_Push_Button_State == 2;
-    }
 
     if (Start_Push_Button_State == 1) {
       delay(1000);
