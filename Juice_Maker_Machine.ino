@@ -102,8 +102,8 @@ void loop() {
     Display.StartScreen();
 
     VariableResistorReading = map(analogRead(A0), 0, 20, 0, 1023);
+    Serial.print("Pot: ");
     Serial.print(VariableResistorReading);
-    Serial.print("h");
 
     if (VariableResistorReading < 512) {
       ModeState = 1;

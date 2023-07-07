@@ -22,7 +22,6 @@ public:
 
   int PotentiometerData() {
     PotReading = analogRead(A0);
-    Serial.println(PotFixedData);
     PotFixedData = map(PotReading, 0, 1023, -1, (Maximum_Mills / 10) + 1);
     Serial.println(PotFixedData);
     if(PotFixedData == -1){
