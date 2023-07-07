@@ -155,7 +155,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("DONE :)");
-        delay(1000);
+        delay(1700);
         IRState = 0;
       }
     }
@@ -183,7 +183,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("DONE :)");
-        delay(1000);
+        delay(1700);
         IRState = 0;
       }
     }
@@ -210,7 +210,7 @@ void loop() {
         lcd.clear();
         lcd.setCursor(0, 0);
         lcd.print("DONE :)");
-        delay(1000);
+        delay(1700);
         IRState = 0;
       }
     }
@@ -264,8 +264,6 @@ SelectionArea:
         lcd.print("Apple");
 
         break;
-
-
     }
 
 
@@ -323,6 +321,11 @@ SelectionArea:
         break;
     }
 
+    if (PushButtons.CheckConfirmButton() == 1) {
+      VariableResistorReading = General.ReadPotentiometer(PotentiometerPin);
+      FinalSelection = map(VariableResistorReading, 1023, 0, 3, 0);
+    }
+
     StartPushButtonRead = PushButtons.CheckStartButton();
 
     Serial.print("Start:");
@@ -353,6 +356,11 @@ SelectionArea:
 
         Start_Push_Button_State = 0;
         FlashState = 0;
+
+        Pineapple_Juice_Mills = 0;
+        Mango_Juice_Mills = 0;
+        Apple_Juice_Mills = 0;
+
         goto SelectionArea;
       }
       Pumps.open(PumpPin1, "NO");
@@ -370,6 +378,10 @@ SelectionArea:
 
       Start_Push_Button_State = 0;
       ModeState = 0;
+
+      Pineapple_Juice_Mills = 0;
+      Mango_Juice_Mills = 0;
+      Apple_Juice_Mills = 0;
     }
     FlashState = 0;
   }
